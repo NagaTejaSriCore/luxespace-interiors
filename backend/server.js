@@ -1,15 +1,27 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from "@google/generative-ai";;
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// Resolve __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Path to the frontend's production build output
+const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+
 app.use(cors());
 app.use(express.json());
+
+// Serve static frontend files (built by Vite)
+app.use(express.static(frontendDist));
 
 const apiKey = process.env.GEMINI_API_KEY;
 
@@ -111,9 +123,14 @@ Assistant:
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
-    mode: "gemini",
+    mode: 'gemini',
     message: 'LuxeSpace Interiors Backend is running!' 
   });
+});
+
+// Catch-all: serve React app for any non-API route (SPA routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
 app.listen(PORT, () => {
