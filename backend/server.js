@@ -133,6 +133,10 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`LuxeSpace Backend running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`LuxeSpace Backend running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

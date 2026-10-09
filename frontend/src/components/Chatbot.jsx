@@ -102,7 +102,7 @@ export default function Chatbot() {
     setErrorState(false);
 
     try {
-      const response = await fetch(`${API_BASE}/api/chat`, {
+        const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
